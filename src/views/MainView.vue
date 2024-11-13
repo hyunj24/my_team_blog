@@ -10,14 +10,19 @@
         />
         <button @click="search">검색</button>
       </div>
-      <button @click="newPost" class="new-post">New Post</button>
+      <div class="header-right">
+        <button @click="newPost" class="new-post">New Post</button>
+        <div class="user-nickname">@{{ userNickname }}</div>
+      </div>
     </header>
     <main>
       <div class="posts-grid">
         <div class="post" v-for="post in filteredPosts" :key="post.id">
-          <div class="nickname">@{{ post.nickname }}</div>
+          <div class="post-header">
+            <div class="title">{{ post.title }}</div>
+            <div class="nickname">@{{ post.nickname }}</div>
+          </div>
           <img :src="post.image" alt="Food Image" />
-          <div class="title">{{ post.title }}</div>
           <div class="restaurant">{{ post.restaurant }}</div>
           <div class="likes">❤️ Like {{ post.likes }}</div>
         </div>
@@ -31,6 +36,7 @@ export default {
   data() {
     return {
       searchQuery: '',
+      userNickname: 'User123', // 로그인한 사용자의 닉네임
       posts: [
         {
           id: 1,
@@ -111,19 +117,29 @@ export default {
 
 header {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
   padding: 20px;
+  position: relative;
 }
 
 .search-bar {
   display: flex;
   align-items: center;
+  margin: 10px 0;
 }
 
 .search-bar input {
   padding: 5px;
   margin-right: 10px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  right: 20px;
+  top: 20px;
 }
 
 .new-post {
@@ -132,6 +148,11 @@ header {
   color: white;
   border: none;
   cursor: pointer;
+  margin-right: 20px;
+}
+
+.user-nickname {
+  font-weight: bold;
 }
 
 .posts-grid {
@@ -145,6 +166,13 @@ header {
   border: 1px solid #ccc;
   padding: 10px;
   text-align: left;
+  position: relative; /* 추가 */
+}
+
+.post-header {
+  display: flex;
+  justify-content: space-between; /* 제목과 닉네임을 양쪽 끝에 배치 */
+  align-items: center;
 }
 
 .post img {
@@ -154,6 +182,9 @@ header {
 
 .nickname {
   font-weight: bold;
+  position: absolute; /* 추가 */
+  top: 10px; /* 추가 */
+  right: 10px; /* 추가 */
 }
 
 .likes {
