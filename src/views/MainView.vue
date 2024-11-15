@@ -1,33 +1,30 @@
 <template>
-  <div id="app">
-    <header>
-      <h1>맛집블로그</h1>
-      <div class="search-bar">
-        <input
-          type="text"
-          placeholder="검색어를 입력하세요"
-          v-model="searchQuery"
-        />
-        <button @click="search">검색</button>
-      </div>
-      <div class="header-right">
-        <button @click="newPost" class="new-post">New Post</button>
-        <div class="user-nickname">@{{ userNickname }}</div>
-      </div>
-    </header>
-    <main>
-      <div class="posts-grid">
-        <div class="post" v-for="post in filteredPosts" :key="post.id">
-          <div class="post-header">
-            <div class="title">{{ post.title }}</div>
-            <div class="nickname">@{{ post.nickname }}</div>
-          </div>
-          <img :src="post.image" alt="Food Image" />
-          <div class="restaurant">{{ post.restaurant }}</div>
-          <div class="likes">❤️ Like {{ post.likes }}</div>
+  <div class="main-container">
+    <h1 class="title">맛집블로그</h1>
+    <div class="search-bar-container">
+      <input
+        type="text"
+        v-model="searchQuery"
+        placeholder="검색어를 입력하세요"
+      />
+      <button @click="goToNewPost">New Post</button>
+    </div>
+
+    <div class="post-board">
+      <div class="post-card" v-for="post in filteredPosts" :key="post.id">
+        <div class="profile">
+          <span class="nickname">{{ post.author }}</span>
         </div>
+        <router-link
+          :to="{ name: 'Visiting', params: { id: post.id } }"
+          class="post-title"
+          >{{ post.postTitle }}</router-link
+        >
+        <img :src="post.image" alt="Post Image" class="post-image" />
+        <h3 class="store-name">{{ post.storeName }}</h3>
+        <p class="likes">💜 Like {{ post.likes }}</p>
       </div>
-    </main>
+    </div>
   </div>
 </template>
 
@@ -36,56 +33,40 @@ export default {
   data() {
     return {
       searchQuery: '',
-      userNickname: 'User123', // 로그인한 사용자의 닉네임
       posts: [
         {
           id: 1,
-          nickname: 'abcd',
-          title: '맛있는 떡볶이',
-          image: 'tteokbokki.jpg',
-          restaurant: '경기대 근처 떡볶이',
+          author: '@abcd',
+          postTitle: '경기대 근처 짱이야떡볶이 추천합니다!',
+          image: require('@/assets/tteokbokki.jpg'),
+          storeName: '짱이야 떡볶이',
           likes: 25,
         },
         {
           id: 2,
-          nickname: 'puppy',
-          title: '타코 맛집',
-          image: 'taco.jpg',
-          restaurant: '타코 맛집 최고!',
+          author: '@puppy',
+          postTitle: '타코집 중에서는 여기가 최고에요 ㅠㅠ',
+          image: require('@/assets/taco.jpg'),
+          storeName: '타코타코팜',
           likes: 10,
         },
         {
           id: 3,
-          nickname: 'lmcat',
-          title: '피자 홈',
-          image: 'pizza.jpg',
-          restaurant: '수제 피자집 피자 홈 강추!',
-          likes: 5,
+          author: '@Imcat',
+          postTitle: '수제피자집 피자홈 강추!',
+          image: require('@/assets/pizza.jpg'),
+          storeName: '피자홈홈',
+          likes: 20,
         },
         {
           id: 4,
-          nickname: 'hamstar',
-          title: '엄마의 김치찌개',
-          image: 'kimchi.jpg',
-          restaurant: '엄마 손맛 가득한 김치찌개집',
+          author: '@hamstar',
+          postTitle: '어머니 손맛 가득한 김치찌개집 추천이요,,',
+          image: require('@/assets/gimchi.jpg'),
+          storeName: '어머니 김치찌개',
           likes: 14,
         },
-        {
-          id: 5,
-          nickname: 'boxfox',
-          title: '초밥 일식',
-          image: 'sushi.jpg',
-          restaurant: '스시 일식 맛집',
-          likes: 14,
-        },
-        {
-          id: 6,
-          nickname: 'tigerrrr',
-          title: '경기 중식',
-          image: 'jjajang.jpg',
-          restaurant: '경기 중식 짜장면 맛있어요 추천!!',
-          likes: 18,
-        },
+        // 다른 게시글들...
       ],
     };
   },
@@ -93,101 +74,127 @@ export default {
     filteredPosts() {
       return this.posts.filter(
         (post) =>
-          post.title.includes(this.searchQuery) ||
-          post.restaurant.includes(this.searchQuery)
+          post.storeName.includes(this.searchQuery) ||
+          post.postTitle.includes(this.searchQuery)
       );
     },
   },
   methods: {
     search() {
-      // 검색 결과는 실시간으로 반영되므로 여기는 비워둡니다
+      // 검색 로직 처리
+      console.log('검색 기능 실행됨');
     },
-    newPost() {
-      // 새로운 글 작성 페이지로 이동하는 기능 추가
+    goToNewPost() {
+      this.$router.push('/newpost'); // 글 작성 화면으로 이동
     },
   },
 };
 </script>
 
-<style>
-#app {
-  font-family: Arial, sans-serif;
+<style scoped>
+.main-container {
   text-align: center;
-}
-
-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   padding: 20px;
-  position: relative;
 }
 
-.search-bar {
+input {
+  padding: 8px;
+  font-size: 16px;
+}
+
+.title {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.search-bar-container {
   display: flex;
+  justify-content: center;
   align-items: center;
-  margin: 10px 0;
+  margin-bottom: 20px;
 }
 
 .search-bar input {
-  padding: 5px;
-  margin-right: 10px;
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-  position: absolute;
-  right: 20px;
-  top: 20px;
-}
-
-.new-post {
-  padding: 10px 20px;
-  background-color: black;
-  color: white;
-  border: none;
-  cursor: pointer;
-  margin-right: 20px;
-}
-
-.user-nickname {
-  font-weight: bold;
-}
-
-.posts-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 20px;
-  padding: 20px;
-}
-
-.post {
+  padding: 8px;
+  font-size: 1rem;
   border: 1px solid #ccc;
-  padding: 10px;
-  text-align: left;
-  position: relative; /* 추가 */
+  border-radius: 4px;
 }
 
-.post-header {
+.search-bar button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+.post-board {
   display: flex;
-  justify-content: space-between; /* 제목과 닉네임을 양쪽 끝에 배치 */
-  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
 }
 
-.post img {
-  width: 100%;
-  height: auto;
+.post-card {
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+  width: 300px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.profile-image {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 8px;
 }
 
 .nickname {
   font-weight: bold;
-  position: absolute; /* 추가 */
-  top: 10px; /* 추가 */
-  right: 10px; /* 추가 */
+}
+
+.description {
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+}
+
+.post-image {
+  width: 100%;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.business-name {
+  font-size: 1.1rem;
+  margin: 5px 0;
 }
 
 .likes {
-  color: #ff69b4;
+  font-size: 0.9rem;
+  color: #888;
+}
+
+button {
+  margin-left: 10px;
+  padding: 8px 16px;
+  background-color: black;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: gray;
 }
 </style>
